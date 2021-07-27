@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import PropTypes from 'prop-types';
 import * as Router from '@freighter/router';
 import AppLazyLoader from './AppLazyLoader'
@@ -8,13 +8,13 @@ export default function DynamicRoutes(props) {
 
 	function renderRoutes(routes) {
 		if (routes && routes.length > 0) {
-			return routes.map(({appName, preferences}) => {
+			return routes.map(({ appName, preferences }) => {
 				return (
-					<Router.Route 
+					<Router.Route
 						key={`/${prefix}/${appName}`}
 						path={`/${prefix}/${appName}`}
 						render={props => (
-							<AppLazyLoader 
+							<AppLazyLoader
 								preRendered={appName === module?.name ? module.module : null}
 								history={props.history}
 								module={appName}
