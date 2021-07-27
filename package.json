@@ -1,0 +1,26 @@
+{
+	"name": "Freighter",
+	"version": "1.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"postinstall": "lerna bootstrap",
+		"release": "lerna publish --conventional-commits --message \"chore(npm): publish\"",
+		"dev": "nodemon --exec babel-node ./index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/crazywolf132/Freighter.git"
+	},
+	"keywords": [],
+	"author": "Brayden Moon <crazywolf132@gmail.com> (https://github.com/crazywolf132)",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/crazywolf132/Freighter/issues"
+	},
+	"homepage": "https://crazywolf132.github.io/Freighter/",
+	"dependencies": {},
+	"devDependencies": {
+		"lerna": "^3.22.1"
+	}
+}
