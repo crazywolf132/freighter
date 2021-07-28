@@ -1,6 +1,6 @@
 {
 	"name": "@freighter/frontend",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"main": "./lib/cjs/index.js",
 	"license": "MIT",
 	"module": "./lib/esm/index.js",
@@ -31,5 +31,5 @@
 		"lodash": "^4.17.21",
 		"prop-types": "^15.7.2"
 	},
-	"gitHead": "7b31a7de980e50c1d7478f0f216248bab5d95c5a"
+	"gitHead": "666a5f6295cc8c8d60fdba813c75678c4caab382"
 }
