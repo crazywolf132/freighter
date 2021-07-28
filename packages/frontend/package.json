@@ -1,6 +1,6 @@
 {
 	"name": "@freighter/frontend",
-	"version": "1.2.4",
+	"version": "1.2.5",
 	"main": "./lib/cjs/index.js",
 	"license": "MIT",
 	"module": "./lib/esm/index.js",
