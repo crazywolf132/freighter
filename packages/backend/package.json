@@ -1,8 +1,19 @@
 {
 	"name": "@freighter/backend",
-	"version": "1.0.1",
-	"main": "index.js",
+	"version": "1.0.2",
+	"main": "./lib/cjs/index.js",
 	"license": "MIT",
+	"module": "./lib/esm/index.js",
+	"types": "./lib/esm/index.d.ts",
+	"files": [
+		"/lib"
+	],
+	"scripts": {
+		"build": "yarn build:esm && yarn build:cjs",
+		"build:esm": "tsc",
+		"build:cjs": "tsc --module commonjs --outDir lib/cjs",
+		"prepublish": "rm -rf ./lib && yarn build"
+	},
 	"dependencies": {
 		"@babel/plugin-proposal-class-properties": "^7.10.4",
 		"@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
