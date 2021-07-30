@@ -4,9 +4,10 @@ import * as Router from '@freighter/router';
 import AppLazyLoader from './AppLazyLoader'
 
 export default function DynamicRoutes(props) {
-	const { routes, module, routeStates, prefix } = props;
+	const { routes, module, prefix } = props;
 
-	function renderRoutes(routes) {
+
+	function renderRoutes() {
 		if (routes && routes.length > 0) {
 			return routes.map(({ appName, preferences }) => {
 				return (
@@ -19,7 +20,6 @@ export default function DynamicRoutes(props) {
 								history={props.history}
 								module={appName}
 								urlDomain={`/${prefix}/${appName}`}
-								extraInfo={...routeStates}
 							/>
 						)} />
 				);
@@ -29,7 +29,7 @@ export default function DynamicRoutes(props) {
 
 	return (
 		<Router.Router>
-			<Router.Switch>{routes && renderRoutes(routes)}</Router.Switch>
+			<Router.Switch>{routes && renderRoutes()}</Router.Switch>
 		</Router.Router>
 	)
 }

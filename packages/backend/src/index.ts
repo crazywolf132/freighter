@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Options from './interfaces/options';
 import process from 'process';
 import ApplicationInformation from './interfaces/applicationInformation';
+import * as fileUtils from './utils/fileUtils'
 
 function uninstallApplication(name: string, options: Options) {
 	return new Promise(async (resolve, reject) => {

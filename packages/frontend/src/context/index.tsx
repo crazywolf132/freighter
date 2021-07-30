@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import CoreReducer from '../reducer';
+import Spinner from '../components/Spinner';
 
 const CoreContext = createContext(null);
 
@@ -8,11 +9,13 @@ export const initialState = {
 	apps: [],
 	areAppsLoaded: false,
 	appBundleUrl: '',
-	spinner: <h1>Loading...</h1>,
-	dynamicLibraries: () => {},
+	spinner: Spinner,
+	dynamicLibraries: () => null,
+	onError: () => { },
+	extraInformation: {}
 };
 
-function CoreProvider (props) {
+function CoreProvider(props) {
 	const [appState, dispatch] = useReducer(CoreReducer, initialState);
 
 	return (

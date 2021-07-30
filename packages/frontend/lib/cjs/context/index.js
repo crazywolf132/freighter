@@ -26,14 +26,17 @@ exports.CoreProvider = exports.default = exports.initialState = void 0;
 var react_1 = __importStar(require("react"));
 var prop_types_1 = __importDefault(require("prop-types"));
 var reducer_1 = __importDefault(require("../reducer"));
+var Spinner_1 = __importDefault(require("../components/Spinner"));
 var CoreContext = react_1.createContext(null);
 exports.default = CoreContext;
 exports.initialState = {
     apps: [],
     areAppsLoaded: false,
     appBundleUrl: '',
-    spinner: react_1.default.createElement("h1", null, "Loading..."),
-    dynamicLibraries: function () { },
+    spinner: Spinner_1.default,
+    dynamicLibraries: function () { return null; },
+    onError: function () { },
+    extraInformation: {}
 };
 function CoreProvider(props) {
     var _a = react_1.useReducer(reducer_1.default, exports.initialState), appState = _a[0], dispatch = _a[1];

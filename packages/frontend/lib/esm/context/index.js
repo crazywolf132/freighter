@@ -1,13 +1,16 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import CoreReducer from '../reducer';
+import Spinner from '../components/Spinner';
 var CoreContext = createContext(null);
 export var initialState = {
     apps: [],
     areAppsLoaded: false,
     appBundleUrl: '',
-    spinner: React.createElement("h1", null, "Loading..."),
-    dynamicLibraries: function () { },
+    spinner: Spinner,
+    dynamicLibraries: function () { return null; },
+    onError: function () { },
+    extraInformation: {}
 };
 function CoreProvider(props) {
     var _a = useReducer(CoreReducer, initialState), appState = _a[0], dispatch = _a[1];

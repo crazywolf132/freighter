@@ -33,7 +33,6 @@ var ErrorHandlerContainer = /** @class */ (function (_super) {
             error: error,
             info: info
         });
-        console.log({ error: error, info: info, wasError: true });
     };
     ErrorHandlerContainer.prototype.render = function () {
         if (this.state.hasError) {

@@ -13,7 +13,7 @@ var __assign = (this && this.__assign) || function () {
 var initialState = {
     loadingApp: null,
     isLoading: false,
-    cache: null
+    cache: null,
 };
 var lazyLoaderState = __assign({}, initialState);
 var userStack = [];

@@ -19,8 +19,6 @@ class ErrorHandlerContainer extends React.Component {
 			error,
 			info
 		});
-
-		console.log({error, info, wasError: true});
 	}
 
 	render() {

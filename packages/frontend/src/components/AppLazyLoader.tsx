@@ -1,85 +1,109 @@
 // @ts-nocheck
-import React, {useContext, useEffect, useState} from 'react';
-import CoreContext from '../context';
-import { reset, useLazyLoaderState, useStack} from '../utils/LazyLoaderUtils.js';
-import dynamicImport from '../utils/DynamicImport';
-import axios from 'axios';
 
+import React, { useContext, useEffect, useState } from 'react';
+import { reset, useLazyLoaderState, useStack } from '../utils/LazyLoaderUtils';
+import dynamicImport from '../utils/DynamicImport';
+import CoreContext from '../context';
+import axios from 'axios';
+import MySpinner from '../components/Spinner'
+
+// Use to prevent state updates on unmounted component
+// eslint-disable-next-line
 const [lazyLoaderState, setLazyLoaderState] = useLazyLoaderState();
+// eslint-disable-next-line
+const [pushStack, popStack, isStackEmpty] = useStack();
 
 function AppLazyLoader(props) {
+	const [app, setApp] = useState({
+		name: null,
+		element: null,
+	});
+
 	const {
 		module,
 		urlDomain,
+		history,
 		onError,
 		preRendered,
-		extraInfo
 	} = props;
 
-	const [app, setApp] = useState({
-		name: null,
-		element: null
-	});
+	const { appState: { appBundleUrl, onError, Spinner, dynamicLibraries, extraInformation } } = useContext(CoreContext);
 
-	const {appState: {appBundleUrl, Spinner, dynamicLibraries}} = useContext(CoreContext);
-
-	const lazyLoadModule = async (
+	const lazyLoadModule = (
 		appName,
 		urlDomain_,
 		history_,
-		extraInfo_
 	) => {
+
 		setLazyLoaderState({
 			loadingApp: appName,
-			isLoading: true
+			isLoading: true,
 		});
 
 		if (preRendered == null) {
-			axios.get(`${appBundleUrl}/${appName}`).then(({data}) => {
+			axios(`${appBundleUrl}${appName}`).then(({ data }) => {
 				if (lazyLoaderState.loadingApp === appName) {
 					const module = dynamicImport(data, dynamicLibraries);
-					const element = React.isValidElement(module) ? module : React.createElement(module, { urlDomain: urlDomain_, history: history_, ...extraInfo_});
+					const element = React.isValidElement(module)
+						? module
+						: React.createElement(module, {
+							urlDomain: urlDomain_,
+							history: history_,
+							...extraInformation
+						});
 					setLazyLoaderState({
 						isLoading: false,
-						cache: module
+						cache: module,
 					});
-					// @ts-expect-error
-					setApp({name: appName, element});
+					setApp({ name: appName, element });
 				}
 			}).catch(error => {
 				if (lazyLoaderState.loadingApp === appName) {
 					reset();
-					if (onError) onError();
+					if (onError) onError(error);
 				}
 			})
 		} else {
 			// We already have this page's data... so lets use it.
 			const module = dynamicImport(preRendered, dynamicLibraries);
-			const element = React.isValidElement(module) ? module : React.createElement(module, { urlDomain: urlDomain_, history: history_, ...extraInfo_});
-			setLazyLoaderState({ isLoading: false, cache: module });
-			// @ts-expect-error
-			setApp({name: appName, element});
+			const element = React.isValidElement(module)
+				? module
+				: React.createElement(module, {
+					urlDomain: urlDomain_,
+					history: history_,
+					...extraInformation
+				});
+			setLazyLoaderState({
+				isLoading: false,
+				cache: module,
+			});
+			setApp({ name: appName, element });
 		}
-	}
+	};
 
 	useEffect(() => {
-		const {loadingApp, isLoading, cache} = lazyLoaderState;
+		const { loadingApp, isLoading, cache } = lazyLoaderState;
 		if (isLoading) {
 			if (loadingApp !== module) {
-				lazyLoadModule(module, urlDomain, history, extraInfo);
+				lazyLoadModule(
+					module,
+					urlDomain,
+					history
+				);
 			}
 		} else if (loadingApp === null || loadingApp !== module) {
 			lazyLoadModule(
-				module, urlDomain, history, extraInfo
+				module,
+				urlDomain,
+				history
 			);
 		} else {
 			setTimeout(() => {
-				// @ts-expect-error
-				setApp({ element: React.createElement(cache, {
+				setApp({
+					element: React.createElement(cache, {
 						urlDomain,
 						history,
-						...extraInfo
-					})
+					}),
 				});
 			}, 100);
 		}
@@ -88,9 +112,7 @@ function AppLazyLoader(props) {
 	if (app.element !== null) {
 		return app.element;
 	}
-
-	return <Spinner />;
-
+	return React.isValidElement(Spinner) ? React.createElement(Spinner) : <MySpinner />;
 }
 
 export default AppLazyLoader;

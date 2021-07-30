@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var externalRequire_js_1 = __importDefault(require("./externalRequire.js"));
 var requireHandler = function (providedLibrary) { return function (module) {
     var internal = externalRequire_js_1.default(module);
-    if (internal)
+    if (internal != null)
         return internal;
     // We are here... so it must not have found anything...
     // We are just going to return the result of the provided one...

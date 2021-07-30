@@ -16,7 +16,7 @@ exports.useLazyLoaderState = exports.reset = exports.useStack = void 0;
 var initialState = {
     loadingApp: null,
     isLoading: false,
-    cache: null
+    cache: null,
 };
 var lazyLoaderState = __assign({}, initialState);
 var userStack = [];

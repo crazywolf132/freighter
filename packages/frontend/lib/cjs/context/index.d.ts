@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Spinner from '../components/Spinner';
 declare const CoreContext: React.Context<null>;
 export declare const initialState: {
     apps: never[];
     areAppsLoaded: boolean;
     appBundleUrl: string;
-    spinner: JSX.Element;
-    dynamicLibraries: () => void;
+    spinner: typeof Spinner;
+    dynamicLibraries: () => null;
+    onError: () => void;
+    extraInformation: {};
 };
 declare function CoreProvider(props: any): JSX.Element;
 declare namespace CoreProvider {

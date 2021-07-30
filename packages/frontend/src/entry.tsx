@@ -1,55 +1,32 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import Axios from 'axios';
 import PropTypes from 'prop-types';
 import ErrorHandlerContainer from "./components/errorHandler";
 import DynamicRoutes from "./components/dynamicRoutes";
+import Spinner from './components/Spinner';
 import CoreContext from './context';
+
 
 const CoreHandler = (props: any) => {
 	const { modules = {},
-			appLink,
-			appList,
-			appBundleUrl,
-			disableAppCheck,
-			appListCallback,
-			appListHeaders,
-			appListBody,
-			appListMethod,
-			usingAuth,
-			isValidCheck,
-			invalidUserCallback,
-			selfHandleInitiation,
-			routePrefix,
-			areAppsLoaded,
-			navigationLoaded,
-			dynamicLibraries,
-			extraInformation,
-			loadingComponent: Spinner, wrapperComponent: Wrapper, ...rest} = props;
+		appBundleUrl,
+		initializer,
+		routePrefix,
+		areAppsLoaded,
+		navigationLoaded,
+		dynamicLibraries,
+		extraInformation,
+		onError,
+		loadingComponent: Spinner, wrapperComponent: Wrapper, ...rest } = props;
 
-			//@ts-expect-error
-	const {dispatch, appState} = useContext(CoreContext);
-
-	const init = () => {
-		getSessionApps();
-	}
+	//@ts-expect-error
+	const { dispatch, appState } = useContext(CoreContext);
 
 	const setApps = (apps) => {
 		dispatch({
 			type: 'SET_APPS',
 			apps
 		})
-	}
-		
-	const getSessionApps = async () => {
-		if (disableAppCheck) return
-
-		const results = await Axios.get(appLink, {headers: {...appListHeaders}});
-
-		const apps = results.data;
-
-		const routes = getRoutes(apps);
-		if (appListCallback) appListCallback(routes);
-		setApps(routes);
 	}
 
 	useEffect(() => {
@@ -58,28 +35,26 @@ const CoreHandler = (props: any) => {
 			type: "SET_ALL_DETAILS",
 			information: {
 				appBundleUrl,
-				apps: appList, // this is incase they provide the apps to us.
 				dynamicLibraries,
-				spinner: Spinner
+				spinner: Spinner,
+				onError,
+				extraInformation
 			}
-		})
+		});
 
-		if (selfHandleInitiation && typeof selfHandleInitiation === 'function') return selfHandleInitiation(setApps);
-
-		if (usingAuth && isValidCheck()) {
-			init();
-		} else if (usingAuth && !isValidCheck()) {
-			return invalidUserCallback();
+		if (initializer && typeof initializer === 'function') {
+			initializer(providedApps => getRoutes(setApps(providedApps)));
 		} else {
-			init();
+			throw Error("Please provide an initializer, that takes 1 argument. As described in the docs.")
 		}
+
 	}, []);
 
-	const getRoutes = (apps) => apps.map(app => ({...app, routeURL: app.appName.replace(/\s/g, ''), appName: app.appName}));
+	const getRoutes = (apps) => (apps ?? []).map(app => ({ ...app, routeURL: app.appName.replace(/\s/g, ''), appName: app.appName }));
 
 	return appState.areAppsLoaded && navigationLoaded ? (<Wrapper>
 		<ErrorHandlerContainer>
-			<DynamicRoutes prefix={routePrefix} routes={appState.apps} module={modules} routeStates={{...extraInformation}} />
+			<DynamicRoutes prefix={routePrefix} routes={appState.apps} module={modules}/>
 		</ErrorHandlerContainer>
 	</Wrapper>) : <Spinner />
 }
@@ -88,13 +63,13 @@ CoreHandler.defaultProps = {
 	appListMethod: "GET",
 	appListBody: {},
 	appListHeaders: {},
-	appListCallback: () => {},
+	appListCallback: () => { },
 	appLink: "",
 	disableAppCheck: false,
-	selfHandleInitiation: (getSessionApps, getRoutes) => {},
+	initializer: (saveApps) => { },
 	routePrefix: 'dashboard',
 	wrapperComponent: React.Fragment,
-	loadingComponent: <h1>Loading...</h1>
+	loadingComponent: Spinner
 }
 
 CoreHandler.propTypes = {
@@ -105,30 +80,10 @@ CoreHandler.propTypes = {
 		/** The actual application code */
 		module: PropTypes.any
 	}),
-	/** Link to the endpoint where we will get a list of all the available apps */
-	appLink: PropTypes.string,
-	/** List of applications for the UI */
-	appList: PropTypes.arrayOf(PropTypes.shape({})),
 	/** Endpoint to use, to get app bundle */
 	appBundleUrl: PropTypes.string.isRequired,
-	/** Disables manual check for apps, incase you prefer to hand them to us */
-	disableAppCheck: PropTypes.bool,
-	/** App List callback, incase you would like to set the appList into a context or something */
-	appListCallback: PropTypes.func,
-	/** Addition headers to be sent when performing an App list fetch */
-	appListHeaders: PropTypes.shape({}),
-	/** Additional body to be sent when performing an App list fetch */
-	appListBody: PropTypes.shape({}),
-	/** Network request type, for fetching an App List */
-	appListMethod: PropTypes.string,
-	/** Lets the system know if you are using an auth system */
-	usingAuth: PropTypes.bool,
-	/** Callback to check see if the user is valid */
-	isValidCheck: PropTypes.func,
-	/** Callback for when the user is not valid */
-	invalidUserCallback: PropTypes.func,
 	/** A function that will be called, to let you handle the initiation process yourself. You will be provided with a callback to kick off the different steps */
-	selfHandleInitiation: PropTypes.func,
+	initializer: PropTypes.func,
 	/** Route prefix to use on all micro-applications. (It is best to use the same starting route as the orchestrator. eg. 'dashboard') */
 	routePrefix: PropTypes.string,
 	/** Context vale of, navigationLoaded. This is used so we can hold off loading the apps until the navigation bar is completely rendered. */
@@ -140,8 +95,10 @@ CoreHandler.propTypes = {
 	/** Extra Information to be provided to all micro-applications */
 	extraInformation: PropTypes.shape({}),
 	/** Dynamic import libraries */
-	dynamicLibraries: PropTypes.func
-	
+	dynamicLibraries: PropTypes.func,
+	/** Error handler for failed package bundle */
+	onError: PropTypes.func
+
 }
 
 export default CoreHandler

@@ -3,6 +3,7 @@ import { CoreProvider } from './context';
 import Entry from './entry'
 
 const AppEngine = (props) => {
+
 	return <CoreProvider>
 		<Entry {...props} />
 	</CoreProvider>

@@ -27,17 +27,17 @@ var prop_types_1 = __importDefault(require("prop-types"));
 var Router = __importStar(require("@freighter/router"));
 var AppLazyLoader_1 = __importDefault(require("./AppLazyLoader"));
 function DynamicRoutes(props) {
-    var routes = props.routes, module = props.module, routeStates = props.routeStates, prefix = props.prefix;
-    function renderRoutes(routes) {
+    var routes = props.routes, module = props.module, prefix = props.prefix;
+    function renderRoutes() {
         if (routes && routes.length > 0) {
             return routes.map(function (_a) {
                 var appName = _a.appName, preferences = _a.preferences;
-                return (react_1.default.createElement(Router.Route, { key: "/" + prefix + "/" + appName, path: "/" + prefix + "/" + appName, render: function (props) { return (react_1.default.createElement(AppLazyLoader_1.default, { preRendered: appName === (module === null || module === void 0 ? void 0 : module.name) ? module.module : null, history: props.history, module: appName, urlDomain: "/" + prefix + "/" + appName, extraInfo: routeStates })); } }));
+                return (react_1.default.createElement(Router.Route, { key: "/" + prefix + "/" + appName, path: "/" + prefix + "/" + appName, render: function (props) { return (react_1.default.createElement(AppLazyLoader_1.default, { preRendered: appName === (module === null || module === void 0 ? void 0 : module.name) ? module.module : null, history: props.history, module: appName, urlDomain: "/" + prefix + "/" + appName })); } }));
             });
         }
     }
     return (react_1.default.createElement(Router.Router, null,
-        react_1.default.createElement(Router.Switch, null, routes && renderRoutes(routes))));
+        react_1.default.createElement(Router.Switch, null, routes && renderRoutes())));
 }
 exports.default = DynamicRoutes;
 DynamicRoutes.propTypes = {

@@ -2,7 +2,7 @@ import externalRequire from './externalRequire.js';
 
 const requireHandler = (providedLibrary: any) => (module: string) => {
 	const internal = externalRequire(module);
-	if (internal) return internal;
+	if (internal != null) return internal;
 
 	// We are here... so it must not have found anything...
 	// We are just going to return the result of the provided one...

@@ -1,7 +1,7 @@
 import externalRequire from './externalRequire.js';
 var requireHandler = function (providedLibrary) { return function (module) {
     var internal = externalRequire(module);
-    if (internal)
+    if (internal != null)
         return internal;
     // We are here... so it must not have found anything...
     // We are just going to return the result of the provided one...
